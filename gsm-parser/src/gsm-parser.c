@@ -16,14 +16,12 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         return;
     }
 
-    char* token = strtok((char*)Rx_Buff, ":");
-
-    if (strcmp(token, "+CPIN") == 0)
+    if (strstr((const char*)Str, (const char*)"+CPIN") != NULL)
     {
         Add_Status(Str, &GSM_Data->CPIN);
 
     }
-    else if (strcmp(token, "+CCID") == 0)
+    else if (strstr((const char*)Str, (const char*)"+CCID") != NULL)
     {
 
         Add_String_Between_Quotes(Str, (char*)GSM_Data->CCID.ICCID);
@@ -31,19 +29,19 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         Add_Status(Str, &GSM_Data->CCID.Status);
 
     }
-    else if (strcmp(token, "+QGSN") == 0)
+    else if (strstr((const char*)Str, (const char*)"+QGSN") != NULL)
     {
         Add_String_Between_Quotes(Str, (char*)GSM_Data->QGSN.IMEI);
 
         Add_Status(Str, &GSM_Data->QGSN.Status);
 
     }
-    else if (strcmp(token, "+IPR") == 0)
+    else if (strstr((const char*)Str, (const char*)"+IPR") != NULL)
     {
         Add_Status(Str, &GSM_Data->IPR);
 
     }
-    else if (strcmp(token, "+CSCA") == 0)
+    else if (strstr((const char*)Str, (const char*)"+CSCA") != NULL)
     {
         Add_String_Between_Quotes(Str, (char*)GSM_Data->CSCA.SCA);
 
@@ -57,12 +55,12 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         Add_Status(Str, &GSM_Data->CSCA.Status);
 
     }
-    else if (strcmp(token, "+CPBR") == 0)
+    else if (strstr((const char*)Str, (const char*)"+CPBR") != NULL)
     {
         uint32_t Index, Type;
         char Number[32] = { 0 }, Text[128] = { 0 };
 
-        if (sscanf(Str, "+CPBR: %u,\"%[^\"]\",%u,\"%[^\"]\"", &Index, Number, &Type, Text) > 0)
+        if (sscanf(Str, "\r\n+CPBR: %u,\"%[^\"]\",%u,\"%[^\"]\"", &Index, Number, &Type, Text) > 0)
         {
             GSM_Data->CPBR.Index = (uint8_t)Index;
             strncpy((char*)GSM_Data->CPBR.Number, Number, sizeof(GSM_Data->CPBR.Number) - 1);
@@ -77,12 +75,12 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         Add_Status(Str, &GSM_Data->CPBR.Status);
 
     }
-    else if (strcmp(token, "+COPS") == 0)
+    else if (strstr((const char*)Str, (const char*)"+COPS") != NULL)
     {
         uint32_t Mode, Format;
         char Oper[16] = { 0 };
 
-        if (sscanf(Str, "+COPS: %u,%u,\"%[^\"]\"", &Mode, &Format, Oper) > 0)
+        if (sscanf(Str, "\r\n+COPS: %u,%u,\"%[^\"]\"", &Mode, &Format, Oper) > 0)
         {
             GSM_Data->COPS.Mode = (uint8_t)Mode;
             GSM_Data->COPS.Format = (uint8_t)Format;
@@ -95,12 +93,12 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
 
         Add_Status(Str, &GSM_Data->COPS.Status);
     }
-    else if (strcmp(token, "+CREG") == 0)
+    else if (strstr((const char*)Str, (const char*)"+CREG") != NULL)
     {
         uint32_t N, Stat;
         char Lag[32] = { 0 }, Ci[32] = { 0 };
 
-        if (sscanf(Str, "+CREG: %u,%u \"%[^\"]\", \"%[^\"]\"", &N, &Stat, Lag, Ci) > 0)
+        if (sscanf(Str, "\r\nCREG: %u,%u \"%[^\"]\", \"%[^\"]\"", &N, &Stat, Lag, Ci) > 0)
         {
             GSM_Data->CREG.N = (uint8_t)N;
             GSM_Data->CREG.Stat = (uint8_t)Stat;
@@ -115,11 +113,11 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         Add_Status(Str, &GSM_Data->CREG.Status);
 
     }
-    else if (strcmp(token, "+CSQ") == 0)
+    else if (strstr((const char*)Str, (const char*)"+CSQ") != NULL)
     {
         uint8_t Rssi, Ber;
 
-        if (sscanf(Str, "+CSQ: %hhu,%hhu", &Rssi, &Ber) > 0)
+        if (sscanf(Str, "\r\n+CSQ: %hhu,%hhu", &Rssi, &Ber) > 0)
         {
             GSM_Data->CSQ.RSSI = Rssi;
             GSM_Data->CSQ.BER = Ber;
@@ -138,7 +136,7 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         Add_Status(Str, &GSM_Data->CSQ.Status);
 
     }
-    else if (strcmp(token, "+CMGL") == 0)
+    else if (strstr((const char*)Str, (const char*)"+CMGL") != NULL)
     {
 
         uint8_t Sms_Count = 0;
@@ -159,7 +157,7 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         {
             if (strstr(Line, "+CMGL:") != NULL)
             {
-                if (sscanf(Line, "+CMGL: %hhu,\"%[^\"]\",\"%[^\"]\",\"\",\"%[^\"]\"",
+                if (sscanf(Line, "\r\n+CMGL: %hhu,\"%[^\"]\",\"%[^\"]\",\"\",\"%[^\"]\"",
                     &Index, Stat, Sender_Number, Timestamp) > 0)
                 {
                     GSM_Data->CMGL[Sms_Count].Index = Index;
@@ -213,7 +211,7 @@ void Add_Status(char* Str, uint8_t* Dest)
     char* ERROR_Ptr = strstr(Str, "ERROR");
 
     if (ERROR_Ptr != NULL)
-        *Dest = 1;
-    else
         *Dest = 0;
+    else
+        *Dest = 1;
 }
