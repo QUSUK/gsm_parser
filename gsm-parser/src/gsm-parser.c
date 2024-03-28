@@ -1,7 +1,7 @@
 #pragma once
 #include "../inc/gsm-parser.h"
 
-void GSM_Parse(GSM* GSM_Data, const char* Rx_Buff)
+void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
 {
     uint16_t Str_Size = (uint16_t)strlen(Rx_Buff);
     char* Str = (char*)malloc(Str_Size + 1);
@@ -26,14 +26,14 @@ void GSM_Parse(GSM* GSM_Data, const char* Rx_Buff)
     else if (strcmp(token, "+CCID") == 0)
     {
 
-        Add_String_Between_Quotes(Str, GSM_Data->CCID.ICCID);
+        Add_String_Between_Quotes(Str, (char*)GSM_Data->CCID.ICCID);
 
         Add_Status(Str, &GSM_Data->CCID.Status);
 
     }
     else if (strcmp(token, "+QGSN") == 0)
     {
-        Add_String_Between_Quotes(Str, GSM_Data->QGSN.IMEI);
+        Add_String_Between_Quotes(Str, (char*)GSM_Data->QGSN.IMEI);
 
         Add_Status(Str, &GSM_Data->QGSN.Status);
 
@@ -45,7 +45,7 @@ void GSM_Parse(GSM* GSM_Data, const char* Rx_Buff)
     }
     else if (strcmp(token, "+CSCA") == 0)
     {
-        Add_String_Between_Quotes(Str, GSM_Data->CSCA.SCA);
+        Add_String_Between_Quotes(Str, (char*)GSM_Data->CSCA.SCA);
 
         const char* Comma_Ptr = strchr(Str, ',');
 
@@ -144,7 +144,7 @@ void GSM_Parse(GSM* GSM_Data, const char* Rx_Buff)
         uint8_t Sms_Count = 0;
         uint8_t Index = 0;
         char* Line;
-        char Stat[16] = { 0 }, Sender_Number[32] = { 0 }, Timestamp[32] = { 0 }, Text[MAX_SMS_TEXT_LENGTH] = { 0 };
+        char Stat[16] = { 0 }, Sender_Number[32] = { 0 }, Timestamp[32] = { 0 };
 
 
         for (int i = 0; i < MAX_SMS_COUNT; i++)
@@ -174,7 +174,7 @@ void GSM_Parse(GSM* GSM_Data, const char* Rx_Buff)
             }
             else
             {
-                strncpy(GSM_Data->CMGL[Sms_Count].Text, Line, MAX_SMS_TEXT_LENGTH);
+                strncpy((char*)GSM_Data->CMGL[Sms_Count].Text, Line, MAX_SMS_TEXT_LENGTH);
                 GSM_Data->CMGL[Sms_Count].Text[MAX_SMS_TEXT_LENGTH - 1] = '\0';
                 Sms_Count++;
             }

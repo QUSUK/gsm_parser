@@ -95,7 +95,7 @@ typedef struct GSM
 	struct GSM_CMGL CMGL[MAX_SMS_COUNT];
 }GSM;
 
-void GSM_Parse(GSM* GSM_Data, const char* Rx_Buff);
+void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data);
 
 void Add_String_Between_Quotes(char* Str, char* Dest);
 void Add_Status(char* Str, uint8_t* Dest);

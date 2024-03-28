@@ -19,16 +19,16 @@ void main(void)
 {
 	GSM Obj;
 
-	GSM_Parse(&Obj, (const char*)str1);
-	GSM_Parse(&Obj, (const char*)str2);
-	GSM_Parse(&Obj, (const char*)str3);
-	GSM_Parse(&Obj, (const char*)str4);
-	GSM_Parse(&Obj, (const char*)str5);
-	GSM_Parse(&Obj, (const char*)str6);
-	GSM_Parse(&Obj, (const char*)str7);
-	GSM_Parse(&Obj, (const char*)str8);
-	GSM_Parse(&Obj, (const char*)str9);
-	GSM_Parse(&Obj, (const char*)str10);
+	GSM_Parse((const char*)str1, &Obj);
+	GSM_Parse((const char*)str2, &Obj);
+	GSM_Parse((const char*)str3, &Obj);
+	GSM_Parse((const char*)str4, &Obj);
+	GSM_Parse((const char*)str5, &Obj);
+	GSM_Parse((const char*)str6, &Obj);
+	GSM_Parse((const char*)str7, &Obj);
+	GSM_Parse((const char*)str8, &Obj);
+	GSM_Parse((const char*)str9, &Obj);
+	GSM_Parse((const char*)str10, &Obj);
 
 
 }
