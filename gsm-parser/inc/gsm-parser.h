@@ -8,6 +8,7 @@
 
 #define MAX_SMS_COUNT 10
 #define MAX_SMS_TEXT_LENGTH 256
+#define MAX_PHONE_COUNT 30
 
 //AT + CCID 
 typedef struct GSM_CCID
@@ -23,7 +24,7 @@ typedef struct GSM_QGSN
 	uint8_t Status;				//1-OK 0-ERROR
 }QGSN;
 
-//AT + CSCA ? 
+//AT + CSCA
 typedef struct GSM_CSCA
 {
 	uint8_t SCA[32];
@@ -31,7 +32,7 @@ typedef struct GSM_CSCA
 	uint8_t Status;				//1-OK 0-ERROR
 }CSCA;
 
-//AT + CPBR = 1, 10 
+//AT + CPBR
 typedef struct GSM_CPBR
 {
 	uint8_t Index;
@@ -41,7 +42,7 @@ typedef struct GSM_CPBR
 	uint8_t Status;				//1-OK 0-ERROR
 }CPBR;
 
-//AT + COPS ?
+//AT + COPS
 typedef struct GSM_COPS
 {
 	uint8_t Mode;
@@ -50,7 +51,7 @@ typedef struct GSM_COPS
 	uint8_t Status;				//1-OK 0-ERROR
 }COPS;
 
-//AT + CREG ? 
+//AT + CREG 
 typedef struct GSM_CREG
 {
 	uint8_t N;
@@ -68,7 +69,7 @@ typedef struct GSM_CSQ
 	uint8_t Status;				//1-OK 0-ERROR
 }CSQ;
 
-//AT + CMGL = 4 
+//AT + CMGL
 typedef struct GSM_CMGL
 {
 	uint8_t Index;
@@ -88,7 +89,7 @@ typedef struct GSM
 	struct GSM_QGSN QGSN;
 	uint8_t			IPR;		//1-OK 0-ERROR
 	struct GSM_CSCA CSCA;
-	struct GSM_CPBR CPBR;
+	struct GSM_CPBR CPBR[MAX_PHONE_COUNT];
 	struct GSM_COPS COPS;
 	struct GSM_CREG CREG;
 	struct GSM_CSQ	CSQ;
@@ -96,7 +97,6 @@ typedef struct GSM
 }GSM;
 
 void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data);
-
 void Add_String_Between_Quotes(char* Str, char* Dest);
 void Add_Status(char* Str, uint8_t* Dest);
 

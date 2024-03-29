@@ -57,22 +57,41 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
     }
     else if (strstr((const char*)Str, (const char*)"+CPBR") != NULL)
     {
-        uint32_t Index, Type;
+        uint8_t Phone_Count = 0;
+        uint32_t Index = 0, Type = 0;
         char Number[32] = { 0 }, Text[128] = { 0 };
+        char* Line;
+        char* Start_Ptr;
+        char* End_Ptr;
 
-        if (sscanf(Str, "\r\n+CPBR: %u,\"%[^\"]\",%u,\"%[^\"]\"", &Index, Number, &Type, Text) > 0)
+        for (int i = 0; i < MAX_PHONE_COUNT; i++)
         {
-            GSM_Data->CPBR.Index = (uint8_t)Index;
-            strncpy((char*)GSM_Data->CPBR.Number, Number, sizeof(GSM_Data->CPBR.Number) - 1);
-            GSM_Data->CPBR.Type = (uint8_t)Type;
-            strncpy((char*)GSM_Data->CPBR.Text, Text, sizeof(GSM_Data->CPBR.Text) - 1);
-        }
-        else
-        {
-            return;
+            memset(&GSM_Data->CPBR[i], 0, sizeof(GSM_Data->CPBR[i]));
         }
 
-        Add_Status(Str, &GSM_Data->CPBR.Status);
+        Start_Ptr = Str;
+        while ((Start_Ptr = strstr(Start_Ptr, "+CPBR:")) != NULL)
+        {
+            Line = Start_Ptr;
+            if ((End_Ptr = strchr(Line, '\r')) != NULL)
+            {
+                *End_Ptr = '\0';
+            }
+            if (sscanf(Line, "+CPBR: %u,\"%[^\"]\",%u,\"%[^\"]\"", &Index, Number, &Type, Text) > 0)
+            {
+                GSM_Data->CPBR[Phone_Count].Index = (uint8_t)Index;
+                strncpy((char*)GSM_Data->CPBR[Phone_Count].Number, Number, sizeof(GSM_Data->CPBR[Phone_Count].Number) - 1);
+                GSM_Data->CPBR[Phone_Count].Type = (uint8_t)Type;
+                strncpy((char*)GSM_Data->CPBR[Phone_Count].Text, Text, sizeof(GSM_Data->CPBR[Phone_Count].Text) - 1);
+                Phone_Count++;
+            }
+            if (End_Ptr != NULL)
+            {
+                *End_Ptr = '\r';
+                Start_Ptr = End_Ptr + 2; 
+            }
+        }
+       
 
     }
     else if (strstr((const char*)Str, (const char*)"+COPS") != NULL)
@@ -80,7 +99,7 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         uint32_t Mode, Format;
         char Oper[16] = { 0 };
 
-        if (sscanf(Str, "\r\n+COPS: %u,%u,\"%[^\"]\"", &Mode, &Format, Oper) > 0)
+        if (sscanf(Str, "\r\n+COPS: %u,%u, \"%[^\"]\"", &Mode, &Format, Oper) > 0)
         {
             GSM_Data->COPS.Mode = (uint8_t)Mode;
             GSM_Data->COPS.Format = (uint8_t)Format;
@@ -98,7 +117,7 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
         uint32_t N, Stat;
         char Lag[32] = { 0 }, Ci[32] = { 0 };
 
-        if (sscanf(Str, "\r\nCREG: %u,%u \"%[^\"]\", \"%[^\"]\"", &N, &Stat, Lag, Ci) > 0)
+        if (sscanf(Str, "\r\n+CREG: %u,%u \"%[^\"]\", \"%[^\"]\"", &N, &Stat, Lag, Ci) > 0)
         {
             GSM_Data->CREG.N = (uint8_t)N;
             GSM_Data->CREG.Stat = (uint8_t)Stat;
