@@ -11,7 +11,7 @@ uint8_t str6[] = "\r\n+CPBR: 10,\"15021012496\",129,\"QUECTEL\"OK\r\n\r\n+CPBR: 
 uint8_t str7[] = "+COPS: 0,0,\"MTS\"OK\r\n";
 uint8_t str8[] = "+CREG: 1,0\"1878\",\"0873\"OK";
 uint8_t str9[] = "+CSQ: 28,7OK \r\n";
-uint8_t str10[] = "+CMGL: 1,\"STO UNSENT\",\"\",\"\"OK\r\n";
+uint8_t str10[] = "\r\n+CMGL: 1,\"STO UNSENT\",\"\",\"\"OK\r\n";
 
 
 
@@ -29,6 +29,4 @@ void main(void)
 	GSM_Parse((const char*)str8, &Obj);
 	GSM_Parse((const char*)str9, &Obj);
 	GSM_Parse((const char*)str10, &Obj);
-
-
 }

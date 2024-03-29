@@ -189,7 +189,7 @@ void GSM_Parse(const char* Rx_Buff, GSM* GSM_Data)
                     return;
                 }
             }
-            else
+            else if(strcmp(Line, "\r"))
             {
                 strncpy((char*)GSM_Data->CMGL[Sms_Count].Text, Line, MAX_SMS_TEXT_LENGTH);
                 GSM_Data->CMGL[Sms_Count].Text[MAX_SMS_TEXT_LENGTH - 1] = '\0';
